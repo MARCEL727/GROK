@@ -1,0 +1,1686 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MARCEL // HACKER PROFILE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --neon: #00ff41;
+            --neon-dim: #00cc33;
+            --dark: #0a0a0a;
+            --darker: #050505;
+            --glow: 0 0 10px #00ff41, 0 0 20px #00ff41, 0 0 40px #00ff41;
+        }
+
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background: #050505 url('https://iili.io/nqCh4Eu.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--neon);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Overlay dark agar teks tetap terbaca */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.75) 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Navbar */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: rgba(5, 5, 5, 0.85);
+            border-bottom: 1px solid rgba(0, 255, 65, 0.3);
+            backdrop-filter: blur(8px);
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1.4rem;
+            letter-spacing: 3px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(90deg, #ff0040, #ff8800, #ffff00, #00ff41, #00ffff, #0088ff, #ff00ff, #ff0040);
+            background-size: 300% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbow-move 4s linear infinite;
+            filter: drop-shadow(0 0 8px rgba(0, 255, 65, 0.5));
+        }
+
+        @keyframes rainbow-move {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 300% 50%; }
+        }
+
+        /* Hamburger */
+        .hamburger {
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--neon);
+            transition: 0.3s;
+            user-select: none;
+            text-shadow: 0 0 8px var(--neon);
+        }
+
+        .hamburger:hover {
+            color: #fff;
+            text-shadow: 0 0 15px #fff;
+        }
+
+        /* Side Menu */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: -280px;
+            width: 280px;
+            height: 100%;
+            background: rgba(8, 12, 8, 0.97);
+            border-left: 1px solid var(--neon);
+            z-index: 200;
+            transition: right 0.4s cubic-bezier(0.77, 0, 0.18, 1);
+            padding: 80px 30px 30px;
+            box-shadow: -10px 0 30px rgba(0, 255, 65, 0.15);
+        }
+
+        .side-menu.active {
+            right: 0;
+        }
+
+        .side-menu a {
+            display: block;
+            color: var(--neon);
+            text-decoration: none;
+            font-size: 1.2rem;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(0, 255, 65, 0.2);
+            transition: 0.3s;
+            letter-spacing: 2px;
+        }
+
+        .side-menu a:hover {
+            color: #fff;
+            padding-left: 15px;
+            text-shadow: 0 0 10px var(--neon);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--neon);
+        }
+
+        /* Main Content */
+        main {
+            position: relative;
+            z-index: 10;
+            padding-top: 90px;
+            min-height: 100vh;
+        }
+
+        /* Page Sections - only one visible at a time */
+        .page-section {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+            min-height: calc(100vh - 90px);
+        }
+
+        .page-section.active {
+            display: flex;
+        }
+
+        /* Hero / Beranda */
+        #beranda {
+            /* inherits from .page-section */
+        }
+
+        .glitch-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            font-weight: 900;
+            letter-spacing: 8px;
+            position: relative;
+            text-shadow: var(--glow);
+            margin-bottom: 10px;
+        }
+
+        .glitch-title::before,
+        .glitch-title::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch-title::before {
+            left: 2px;
+            text-shadow: -2px 0 #ff0040;
+            clip-path: inset(0 0 50% 0);
+            animation: glitch 2s infinite linear alternate-reverse;
+        }
+
+        .glitch-title::after {
+            left: -2px;
+            text-shadow: 2px 0 #00ffff;
+            clip-path: inset(50% 0 0 0);
+            animation: glitch 3s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-3px, 3px); }
+            40% { transform: translate(-3px, -3px); }
+            60% { transform: translate(3px, 3px); }
+            80% { transform: translate(3px, -3px); }
+            100% { transform: translate(0); }
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            letter-spacing: 4px;
+            opacity: 0.8;
+            margin-bottom: 40px;
+            border: 1px solid rgba(0, 255, 65, 0.4);
+            padding: 8px 20px;
+            display: inline-block;
+        }
+
+        /* Profile Card */
+        .profile-card {
+            background: rgba(0, 20, 5, 0.75);
+            border: 1px solid var(--neon);
+            border-radius: 4px;
+            padding: 40px 30px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.15), inset 0 0 20px rgba(0, 255, 65, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon), transparent);
+            animation: scan 3s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .profile-img-wrapper {
+            width: 160px;
+            height: 160px;
+            margin: 0 auto 25px;
+            position: relative;
+        }
+
+        .profile-img-wrapper::before {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border: 2px solid var(--neon);
+            border-radius: 50%;
+            animation: pulse-ring 2s infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.15); opacity: 0; }
+        }
+
+        .profile-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid var(--neon);
+            box-shadow: 0 0 25px rgba(0, 255, 65, 0.5);
+            background: #111;
+        }
+
+        .name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 6px;
+            margin-bottom: 8px;
+            text-shadow: 0 0 15px var(--neon);
+        }
+
+        .status {
+            font-size: 0.95rem;
+            color: var(--neon-dim);
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+        }
+
+        .status::before {
+            content: '● ';
+            color: #00ff41;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0.3; }
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        .info-item {
+            background: rgba(0, 255, 65, 0.05);
+            padding: 10px 12px;
+            border-left: 2px solid var(--neon);
+        }
+
+        .info-item span {
+            display: block;
+            font-size: 0.75rem;
+            opacity: 0.6;
+            margin-bottom: 3px;
+        }
+
+        /* Social Icons */
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin: 30px 0 10px;
+        }
+
+        .social-btn {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            border: 2px solid var(--neon);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 20, 5, 0.7);
+            color: var(--neon);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 12px rgba(0, 255, 65, 0.3);
+        }
+
+        .social-btn:hover {
+            background: var(--neon);
+            color: #000;
+            transform: scale(1.15);
+            box-shadow: 0 0 25px rgba(0, 255, 65, 0.7);
+        }
+
+        .social-btn svg {
+            width: 26px;
+            height: 26px;
+            fill: currentColor;
+        }
+
+        /* ===== LEADERBOARD ===== */
+        .leaderboard-wrapper {
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto;
+            background: rgba(0, 15, 5, 0.85);
+            border: 1px solid var(--neon);
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.15);
+        }
+
+        .leaderboard-header {
+            display: grid;
+            grid-template-columns: 60px 1fr 100px 90px;
+            padding: 14px 18px;
+            background: rgba(0, 255, 65, 0.12);
+            border-bottom: 1px solid rgba(0, 255, 65, 0.4);
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            opacity: 0.85;
+            text-align: left;
+        }
+
+        .lb-row {
+            display: grid;
+            grid-template-columns: 60px 1fr 100px 90px;
+            padding: 13px 18px;
+            border-bottom: 1px solid rgba(0, 255, 65, 0.12);
+            align-items: center;
+            text-align: left;
+            transition: background 0.25s;
+        }
+
+        .lb-row:hover {
+            background: rgba(0, 255, 65, 0.08);
+        }
+
+        .lb-row:last-child {
+            border-bottom: none;
+        }
+
+        .lb-rank {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .lb-rank.gold { color: #ffd700; text-shadow: 0 0 10px #ffd700; }
+        .lb-rank.silver { color: #c0c0c0; text-shadow: 0 0 8px #c0c0c0; }
+        .lb-rank.bronze { color: #cd7f32; text-shadow: 0 0 8px #cd7f32; }
+
+        .lb-player {
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+        }
+
+        .lb-score {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon);
+            font-size: 0.95rem;
+        }
+
+        .lb-level {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .lb-filter {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .lb-filter button {
+            background: rgba(0, 20, 5, 0.8);
+            border: 1px solid rgba(0, 255, 65, 0.4);
+            color: var(--neon);
+            padding: 8px 16px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.25s;
+            border-radius: 3px;
+        }
+
+        .lb-filter button:hover,
+        .lb-filter button.active {
+            background: var(--neon);
+            color: #000;
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.5);
+        }
+
+        @media (max-width: 550px) {
+            .leaderboard-header,
+            .lb-row {
+                grid-template-columns: 45px 1fr 80px 70px;
+                padding: 11px 12px;
+                font-size: 0.8rem;
+            }
+            .lb-rank { font-size: 0.95rem; }
+        }
+
+        /* Terminal-like footer */
+        .terminal {
+            margin-top: 25px;
+            background: rgba(0, 0, 0, 0.75);
+            border: 1px solid rgba(0, 255, 65, 0.3);
+            padding: 15px 20px;
+            max-width: 500px;
+            width: 100%;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+
+        .terminal .prompt {
+            color: #00ff41;
+        }
+
+        .terminal .cmd {
+            color: #fff;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 1.1em;
+            background: var(--neon);
+            margin-left: 4px;
+            animation: cursor-blink 0.8s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes cursor-blink {
+            50% { opacity: 0; }
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 25px;
+            font-size: 0.8rem;
+            opacity: 0.5;
+            position: relative;
+            z-index: 10;
+            border-top: 1px solid rgba(0, 255, 65, 0.15);
+        }
+
+        footer.hidden {
+            display: none;
+        }
+
+        /* ===== MINECRAFT GAME ===== */
+        #games {
+            padding: 0 !important;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #mc-canvas-wrap {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            background: #87CEEB;
+        }
+
+        #mc-canvas-wrap canvas {
+            display: block;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        #mc-hud {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        #mc-crosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            transform: translate(-50%, -50%);
+        }
+
+        #mc-crosshair::before,
+        #mc-crosshair::after {
+            content: '';
+            position: absolute;
+            background: rgba(255,255,255,0.9);
+            box-shadow: 0 0 2px #000;
+        }
+
+        #mc-crosshair::before {
+            width: 2px;
+            height: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        #mc-crosshair::after {
+            height: 2px;
+            width: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        #mc-info {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            color: #fff;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.85rem;
+            text-shadow: 1px 1px 3px #000;
+            background: rgba(0,0,0,0.45);
+            padding: 10px 14px;
+            border-radius: 4px;
+            line-height: 1.6;
+        }
+
+        #mc-controls-hint {
+            position: absolute;
+            bottom: 95px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.75rem;
+            text-shadow: 1px 1px 3px #000;
+            background: rgba(0,0,0,0.5);
+            padding: 8px 14px;
+            border-radius: 4px;
+            text-align: center;
+            white-space: nowrap;
+            display: none;
+        }
+
+        /* Mobile Controls */
+        #mc-mobile {
+            position: absolute;
+            inset: 0;
+            z-index: 25;
+            pointer-events: none;
+            display: none;
+        }
+
+        #mc-mobile.show {
+            display: block;
+        }
+
+        /* Left joystick */
+        #mc-joystick-zone {
+            position: absolute;
+            left: 10px;
+            bottom: 90px;
+            width: 130px;
+            height: 130px;
+            pointer-events: auto;
+            touch-action: none;
+        }
+
+        #mc-joystick-base {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.35);
+            border: 2px solid rgba(255,255,255,0.35);
+            position: absolute;
+            left: 10px;
+            top: 10px;
+        }
+
+        #mc-joystick-knob {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.55);
+            border: 2px solid rgba(255,255,255,0.8);
+            position: absolute;
+            left: 41px;
+            top: 41px;
+            transition: none;
+        }
+
+        /* Jump button */
+        #mc-btn-jump {
+            position: absolute;
+            right: 20px;
+            bottom: 200px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.4);
+            border: 2px solid rgba(255,255,255,0.45);
+            color: #fff;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: auto;
+            touch-action: none;
+            user-select: none;
+        }
+
+        #mc-btn-jump:active {
+            background: rgba(0,255,65,0.4);
+        }
+
+        /* Right touch zone - hold to break */
+        #mc-break-zone {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 45%;
+            height: calc(100% - 85px);
+            pointer-events: auto;
+            touch-action: none;
+        }
+
+        /* Hotbar */
+        #mc-hotbar {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            pointer-events: auto;
+            z-index: 26;
+        }
+
+        #mc-bag {
+            width: 48px;
+            height: 48px;
+            background: rgba(0,0,0,0.55);
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        #mc-bag:active {
+            background: rgba(0,255,65,0.35);
+        }
+
+        .mc-slot {
+            width: 44px;
+            height: 44px;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            position: relative;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .mc-slot.selected {
+            border-color: #fff;
+            box-shadow: 0 0 8px rgba(255,255,255,0.6);
+            background: rgba(255,255,255,0.15);
+        }
+
+        .mc-slot .slot-num {
+            position: absolute;
+            top: 1px;
+            left: 3px;
+            font-size: 0.55rem;
+            color: rgba(255,255,255,0.7);
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        @media (min-width: 900px) {
+            #mc-mobile { display: none !important; }
+            #mc-controls-hint { display: block; }
+        }
+
+        #mc-click-start {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.65);
+            z-index: 30;
+            cursor: pointer;
+            color: #00ff41;
+            font-family: 'Orbitron', sans-serif;
+            text-align: center;
+            pointer-events: auto;
+        }
+
+        #mc-click-start h2 {
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            letter-spacing: 4px;
+            text-shadow: 0 0 20px #00ff41;
+            margin-bottom: 15px;
+        }
+
+        #mc-click-start p {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.95rem;
+            opacity: 0.85;
+            letter-spacing: 2px;
+        }
+
+        #mc-click-start.hidden {
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 500px) {
+            .profile-card {
+                padding: 30px 20px;
+            }
+            .name {
+                font-size: 1.6rem;
+                letter-spacing: 3px;
+            }
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+
+    <!-- Navbar -->
+    <nav>
+        <div class="logo">
+            WEBSITE
+        </div>
+        <div class="hamburger" onclick="toggleMenu()">≡</div>
+    </nav>
+
+    <!-- Side Menu -->
+    <div class="side-menu" id="sideMenu">
+        <div class="close-btn" onclick="toggleMenu()">×</div>
+        <a href="#" onclick="showSection('beranda'); toggleMenu(); return false;">⌂ BERANDA</a>
+        <a href="#" onclick="showSection('games'); toggleMenu(); return false;">🎮 GAMES WEBSITE</a>
+        <a href="#" onclick="showSection('leaderboard'); toggleMenu(); return false;">🏆 LEADERBOARD</a>
+    </div>
+
+    <!-- Main Content -->
+    <main>
+        <section id="beranda" class="page-section active">
+            <h1 class="glitch-title" data-text="MARCEL">MARCEL</h1>
+            <div class="subtitle">🇮🇩 WEBSITE GAMES INDONESIA 🇮🇩</div>
+
+            <div class="profile-card" id="profil">
+                <div class="profile-img-wrapper">
+                    <img src="https://iili.io/nqC5EYu.png" 
+                         alt="Marcel Profile" 
+                         class="profile-img"
+                         onerror="this.src='https://via.placeholder.com/160/00ff41/000000?text=M'">
+                </div>
+                
+                <div class="name">MARCEL</div>
+                <div class="status">ONLINE • WEBSITE READY</div>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span>STATUS</span>
+                        ONLINE
+                    </div>
+                    <div class="info-item">
+                        <span>FPS</span>
+                        <span id="fps-value">--</span>
+                    </div>
+                    <div class="info-item">
+                        <span>VERSION</span>
+                        0.0.1.0
+                    </div>
+                    <div class="info-item">
+                        <span>LOCATION</span>
+                        Indonesia
+                    </div>
+                </div>
+            </div>
+
+            <!-- Social Media Logos -->
+            <div class="social-links">
+                <a href="https://www.tiktok.com/@marcel_gaming5" target="_blank" class="social-btn" title="TikTok">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .55.04.81.11v-3.5a6.37 6.37 0 0 0-.81-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V8.7a8.2 8.2 0 0 0 4.76 1.51V6.76a4.85 4.85 0 0 1-1.35-.07z"/>
+                    </svg>
+                </a>
+                <a href="https://youtube.com/@yt.marcelindonesia?si=1QSn8KITg0cQkUjA" target="_blank" class="social-btn" title="YouTube">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                    </svg>
+                </a>
+            </div>
+
+            <div class="terminal">
+                <div>
+                    <span class="prompt">WEBSITE@ALLGAMERS:</span> 
+                    <span class="cmd" id="typing-indo"></span><span class="cursor" id="cursor1"></span>
+                </div>
+                <div style="margin: 10px 0 0 0; color: #00ff41;">
+                    <span id="typing-creator"></span><span class="cursor" id="cursor2" style="display:none;"></span>
+                </div>
+                <div style="margin-top: 12px;">
+                    <span class="prompt">BOT@WEBSITE.COM:</span> 
+                    <span class="cmd" id="typing-greet"></span><span class="cursor" id="cursor3" style="display:none;"></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- GAMES WEBSITE SECTION - MINECRAFT -->
+        <section id="games" class="page-section">
+            <div id="mc-canvas-wrap"></div>
+            <div id="mc-hud">
+                <div id="mc-crosshair"></div>
+                <div id="mc-info">
+                    <div>MINECRAFT • MARCEL</div>
+                    <div id="mc-pos">XYZ: 0 0 0</div>
+                    <div id="mc-fps">FPS: --</div>
+                </div>
+                <div id="mc-controls-hint">
+                    WASD Gerak • Mouse Lihat • Spasi Lompat • Klik Kiri Hancurkan • Klik Kanan Taruh • ESC Lepas Mouse
+                </div>
+            </div>
+
+            <!-- Mobile Controls (Android) -->
+            <div id="mc-mobile">
+                <div id="mc-joystick-zone">
+                    <div id="mc-joystick-base">
+                        <div id="mc-joystick-knob"></div>
+                    </div>
+                </div>
+                <div id="mc-btn-jump">⬆</div>
+                <div id="mc-break-zone"></div>
+                <div id="mc-hotbar">
+                    <div id="mc-bag" title="Inventory">🎒</div>
+                    <div class="mc-slot selected" data-slot="1"><span class="slot-num">1</span>🟩</div>
+                    <div class="mc-slot" data-slot="2"><span class="slot-num">2</span>🟫</div>
+                    <div class="mc-slot" data-slot="3"><span class="slot-num">3</span>⬜</div>
+                    <div class="mc-slot" data-slot="4"><span class="slot-num">4</span>🪵</div>
+                    <div class="mc-slot" data-slot="5"><span class="slot-num">5</span>🍃</div>
+                    <div class="mc-slot" data-slot="6"><span class="slot-num">6</span>🟨</div>
+                    <div class="mc-slot" data-slot="7"><span class="slot-num">7</span>🔵</div>
+                </div>
+            </div>
+
+            <div id="mc-click-start">
+                <h2>MINECRAFT</h2>
+                <p>KLIK / SENTUH UNTUK MASUK KE GAME</p>
+            </div>
+        </section>
+
+        <!-- LEADERBOARD SECTION -->
+        <section id="leaderboard" class="page-section">
+            <h2 class="glitch-title" data-text="LEADERBOARD" style="font-size: clamp(1.6rem, 5vw, 2.8rem); margin-bottom: 10px;">LEADERBOARD</h2>
+            <div class="subtitle" style="margin-bottom: 30px;">// TOP PLAYERS RANKING //</div>
+
+            <div class="lb-filter">
+                <button class="active" onclick="filterLB(this, 'all')">ALL</button>
+                <button onclick="filterLB(this, 'weekly')">WEEKLY</button>
+                <button onclick="filterLB(this, 'monthly')">MONTHLY</button>
+            </div>
+
+            <div class="leaderboard-wrapper">
+                <div class="leaderboard-header">
+                    <div>RANK</div>
+                    <div>PLAYER</div>
+                    <div>SCORE</div>
+                    <div>LEVEL</div>
+                </div>
+                <div id="lb-body">
+                    <!-- filled by JS -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        &copy; 2026 • WEBSITE • ALLGAMERS • INDONESIA • BY • MARCEL
+    </footer>
+
+    <script>
+        // ===== SIDE MENU =====
+        function toggleMenu() {
+            document.getElementById('sideMenu').classList.toggle('active');
+        }
+
+        // ===== SECTION SWITCHER (BERANDA / GAMES terpisah) =====
+        function showSection(id) {
+            document.querySelectorAll('.page-section').forEach(function(sec) {
+                sec.classList.remove('active');
+            });
+            var target = document.getElementById(id);
+            if (target) {
+                target.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // Footer: sembunyikan di menu Games
+            var footer = document.querySelector('footer');
+            if (footer) {
+                if (id === 'games') footer.classList.add('hidden');
+                else footer.classList.remove('hidden');
+            }
+
+            // Minecraft start / stop
+            if (id === 'games') {
+                setTimeout(function() { MC.init(); }, 100);
+            } else {
+                MC.stop();
+            }
+        }
+
+        // ===== TYPING EFFECTS (sequential) =====
+        function typeText(elementId, text, cursorId, speed = 70, callback) {
+            const el = document.getElementById(elementId);
+            const cursor = document.getElementById(cursorId);
+            let i = 0;
+            el.textContent = '';
+            if (cursor) cursor.style.display = 'inline-block';
+
+            function type() {
+                if (i < text.length) {
+                    el.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                } else {
+                    if (cursor) cursor.style.display = 'none';
+                    if (callback) setTimeout(callback, 400);
+                }
+            }
+            type();
+        }
+
+        // Greeting based on time (WIB)
+        function getGreeting() {
+            const hour = new Date().getHours();
+            if (hour >= 4 && hour < 11) return 'SELAMAT PAGI';
+            if (hour >= 11 && hour < 15) return 'SELAMAT SIANG';
+            if (hour >= 15 && hour < 18) return 'SELAMAT SORE';
+            return 'SELAMAT MALAM';
+        }
+
+        // Start typing sequence
+        typeText('typing-indo', 'INDONESIA', 'cursor1', 90, function() {
+            typeText('typing-creator', 'MARCEL // CREATORS WEBSITE: SELAMAT DATANG', 'cursor2', 55, function() {
+                typeText('typing-greet', getGreeting(), 'cursor3', 80);
+            });
+        });
+
+        // ===== FPS COUNTER =====
+        let lastTime = performance.now();
+        let frames = 0;
+        let fps = 0;
+
+        function updateFPS(now) {
+            frames++;
+            if (now - lastTime >= 1000) {
+                fps = Math.round((frames * 1000) / (now - lastTime));
+                document.getElementById('fps-value').textContent = fps;
+                frames = 0;
+                lastTime = now;
+            }
+            requestAnimationFrame(updateFPS);
+        }
+        requestAnimationFrame(updateFPS);
+
+        // ===== LEADERBOARD DATA =====
+        const lbData = {
+            all: [
+                { player: 'MARCEL_GAMING', score: 98540, level: 99 },
+                { player: 'ShadowX_ID', score: 87210, level: 87 },
+                { player: 'NinjaPro99', score: 76500, level: 81 },
+                { player: 'CyberWolf', score: 69800, level: 76 },
+                { player: 'PixelKing', score: 65420, level: 72 },
+                { player: 'GamerIndo', score: 58900, level: 68 },
+                { player: 'EliteSniper', score: 52100, level: 63 },
+                { player: 'DarkPhoenix', score: 48750, level: 59 },
+                { player: 'ZeroCool', score: 43200, level: 55 },
+                { player: 'ByteMaster', score: 39800, level: 51 }
+            ],
+            weekly: [
+                { player: 'ShadowX_ID', score: 12400, level: 87 },
+                { player: 'MARCEL_GAMING', score: 11200, level: 99 },
+                { player: 'NinjaPro99', score: 9800, level: 81 },
+                { player: 'PixelKing', score: 8650, level: 72 },
+                { player: 'CyberWolf', score: 7900, level: 76 },
+                { player: 'GamerIndo', score: 7100, level: 68 },
+                { player: 'EliteSniper', score: 6400, level: 63 },
+                { player: 'DarkPhoenix', score: 5800, level: 59 },
+                { player: 'ZeroCool', score: 5200, level: 55 },
+                { player: 'ByteMaster', score: 4700, level: 51 }
+            ],
+            monthly: [
+                { player: 'MARCEL_GAMING', score: 45200, level: 99 },
+                { player: 'NinjaPro99', score: 38900, level: 81 },
+                { player: 'ShadowX_ID', score: 36100, level: 87 },
+                { player: 'CyberWolf', score: 32500, level: 76 },
+                { player: 'PixelKing', score: 29800, level: 72 },
+                { player: 'GamerIndo', score: 26400, level: 68 },
+                { player: 'EliteSniper', score: 23100, level: 63 },
+                { player: 'DarkPhoenix', score: 20500, level: 59 },
+                { player: 'ZeroCool', score: 18200, level: 55 },
+                { player: 'ByteMaster', score: 16800, level: 51 }
+            ]
+        };
+
+        function renderLeaderboard(type) {
+            const data = lbData[type] || lbData.all;
+            const body = document.getElementById('lb-body');
+            body.innerHTML = '';
+
+            data.forEach(function(item, index) {
+                const rank = index + 1;
+                let rankClass = '';
+                let rankDisplay = rank;
+
+                if (rank === 1) { rankClass = 'gold'; rankDisplay = '🥇'; }
+                else if (rank === 2) { rankClass = 'silver'; rankDisplay = '🥈'; }
+                else if (rank === 3) { rankClass = 'bronze'; rankDisplay = '🥉'; }
+
+                const row = document.createElement('div');
+                row.className = 'lb-row';
+                row.innerHTML =
+                    '<div class="lb-rank ' + rankClass + '">' + rankDisplay + '</div>' +
+                    '<div class="lb-player">' + item.player + '</div>' +
+                    '<div class="lb-score">' + item.score.toLocaleString() + '</div>' +
+                    '<div class="lb-level">Lv.' + item.level + '</div>';
+                body.appendChild(row);
+            });
+        }
+
+        function filterLB(btn, type) {
+            document.querySelectorAll('.lb-filter button').forEach(function(b) {
+                b.classList.remove('active');
+            });
+            btn.classList.add('active');
+            renderLeaderboard(type);
+        }
+
+        // Initial render
+        renderLeaderboard('all');
+
+        // =====================================================
+        // MINECRAFT-LIKE GAME ENGINE (Three.js)
+        // =====================================================
+        const MC = (function() {
+            let scene, camera, renderer, world = {};
+            let velocity = new THREE.Vector3();
+            let direction = new THREE.Vector3();
+            let canJump = false;
+            let pitch = 0, yaw = 0;
+            let keys = {};
+            let running = false;
+            let animId = null;
+            let clock = null;
+            let blocksGroup = null;
+            let raycaster = null;
+            let initialized = false;
+            let introTilt = 0;
+            let introDone = false;
+            let lastFpsTime = 0;
+            let frameCount = 0;
+
+            // Mobile controls state
+            let isMobile = false;
+            let joyX = 0, joyZ = 0;
+            let breaking = false;
+            let breakTimer = 0;
+            let selectedSlot = 1;
+            let lookTouchId = null;
+            let lastLookX = 0, lastLookY = 0;
+            const SLOT_TYPES = ['grass', 'dirt', 'stone', 'wood', 'leaves', 'sand', 'water'];
+
+            const BLOCK_SIZE = 1;
+            const WORLD_SIZE = 24;
+            const GRAVITY = 28;
+            const JUMP_SPEED = 9;
+            const MOVE_SPEED = 6;
+            const PLAYER_HEIGHT = 1.7;
+            const PLAYER_RADIUS = 0.3;
+            const BREAK_HOLD_TIME = 0.35; // detik tahan untuk hancurkan
+
+            const COLORS = {
+                grass: 0x5a9c3a,
+                dirt: 0x8B5A2B,
+                stone: 0x888888,
+                wood: 0x6B4226,
+                leaves: 0x2d6b1e,
+                sand: 0xC2B280,
+                water: 0x3a7bd5
+            };
+
+            function key(x, y, z) { return x + ',' + y + ',' + z; }
+
+            function addBlock(x, y, z, type) {
+                const k = key(x, y, z);
+                if (world[k]) return;
+                const geo = new THREE.BoxGeometry(BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                const mat = new THREE.MeshLambertMaterial({ color: COLORS[type] || COLORS.stone });
+                const mesh = new THREE.Mesh(geo, mat);
+                mesh.position.set(x + 0.5, y + 0.5, z + 0.5);
+                mesh.userData = { x, y, z, type };
+                blocksGroup.add(mesh);
+                world[k] = mesh;
+            }
+
+            function removeBlock(x, y, z) {
+                const k = key(x, y, z);
+                const mesh = world[k];
+                if (!mesh) return;
+                blocksGroup.remove(mesh);
+                mesh.geometry.dispose();
+                mesh.material.dispose();
+                delete world[k];
+            }
+
+            function generateWorld() {
+                // Terrain
+                for (let x = -WORLD_SIZE; x < WORLD_SIZE; x++) {
+                    for (let z = -WORLD_SIZE; z < WORLD_SIZE; z++) {
+                        const h = Math.floor(
+                            2 +
+                            Math.sin(x * 0.15) * 2 +
+                            Math.cos(z * 0.12) * 2 +
+                            Math.sin((x + z) * 0.08) * 1.5
+                        );
+                        for (let y = 0; y <= h; y++) {
+                            let type = 'stone';
+                            if (y === h) type = 'grass';
+                            else if (y >= h - 2) type = 'dirt';
+                            addBlock(x, y, z, type);
+                        }
+                        // Simple trees
+                        if (Math.random() < 0.015 && h > 3) {
+                            const th = 3 + Math.floor(Math.random() * 2);
+                            for (let t = 1; t <= th; t++) addBlock(x, h + t, z, 'wood');
+                            for (let lx = -1; lx <= 1; lx++) {
+                                for (let lz = -1; lz <= 1; lz++) {
+                                    for (let ly = 0; ly <= 1; ly++) {
+                                        if (lx === 0 && lz === 0 && ly === 0) continue;
+                                        addBlock(x + lx, h + th + ly, z + lz, 'leaves');
+                                    }
+                                }
+                            }
+                            addBlock(x, h + th + 2, z, 'leaves');
+                        }
+                    }
+                }
+            }
+
+            function isSolid(x, y, z) {
+                return !!world[key(Math.floor(x), Math.floor(y), Math.floor(z))];
+            }
+
+            function collide(pos, vel) {
+                // Simple AABB collision
+                const nx = pos.x + vel.x;
+                const ny = pos.y + vel.y;
+                const nz = pos.z + vel.z;
+
+                // X
+                if (!isSolid(nx - PLAYER_RADIUS, pos.y, pos.z - PLAYER_RADIUS) &&
+                    !isSolid(nx + PLAYER_RADIUS, pos.y, pos.z - PLAYER_RADIUS) &&
+                    !isSolid(nx - PLAYER_RADIUS, pos.y, pos.z + PLAYER_RADIUS) &&
+                    !isSolid(nx + PLAYER_RADIUS, pos.y, pos.z + PLAYER_RADIUS) &&
+                    !isSolid(nx - PLAYER_RADIUS, pos.y + PLAYER_HEIGHT * 0.5, pos.z) &&
+                    !isSolid(nx + PLAYER_RADIUS, pos.y + PLAYER_HEIGHT * 0.5, pos.z) &&
+                    !isSolid(nx, pos.y + PLAYER_HEIGHT, pos.z)) {
+                    pos.x = nx;
+                }
+
+                // Z
+                if (!isSolid(pos.x - PLAYER_RADIUS, pos.y, nz - PLAYER_RADIUS) &&
+                    !isSolid(pos.x + PLAYER_RADIUS, pos.y, nz - PLAYER_RADIUS) &&
+                    !isSolid(pos.x - PLAYER_RADIUS, pos.y, nz + PLAYER_RADIUS) &&
+                    !isSolid(pos.x + PLAYER_RADIUS, pos.y, nz + PLAYER_RADIUS) &&
+                    !isSolid(pos.x, pos.y + PLAYER_HEIGHT * 0.5, nz) &&
+                    !isSolid(pos.x, pos.y + PLAYER_HEIGHT, nz)) {
+                    pos.z = nz;
+                }
+
+                // Y
+                if (vel.y <= 0) {
+                    if (!isSolid(pos.x, ny, pos.z) &&
+                        !isSolid(pos.x - PLAYER_RADIUS, ny, pos.z) &&
+                        !isSolid(pos.x + PLAYER_RADIUS, ny, pos.z) &&
+                        !isSolid(pos.x, ny, pos.z - PLAYER_RADIUS) &&
+                        !isSolid(pos.x, ny, pos.z + PLAYER_RADIUS)) {
+                        pos.y = ny;
+                    } else {
+                        velocity.y = 0;
+                        canJump = true;
+                        pos.y = Math.floor(pos.y) + 0.001;
+                    }
+                } else {
+                    if (!isSolid(pos.x, ny + PLAYER_HEIGHT, pos.z)) {
+                        pos.y = ny;
+                    } else {
+                        velocity.y = 0;
+                    }
+                }
+            }
+
+            function getLookDir() {
+                const dir = new THREE.Vector3(0, 0, -1);
+                const euler = new THREE.Euler(pitch, yaw, 0, 'YXZ');
+                dir.applyEuler(euler);
+                return dir;
+            }
+
+            function onMouseMove(e) {
+                if (document.pointerLockElement !== document.body) return;
+                const sens = 0.0022;
+                yaw -= e.movementX * sens;
+                pitch -= e.movementY * sens;
+                pitch = Math.max(-Math.PI / 2 + 0.01, Math.min(Math.PI / 2 - 0.01, pitch));
+            }
+
+            function doBreakBlock() {
+                const dir = getLookDir();
+                raycaster.set(camera.position, dir);
+                const meshes = Object.values(world);
+                const hits = raycaster.intersectObjects(meshes);
+                if (hits.length === 0) return;
+                const ud = hits[0].object.userData;
+                removeBlock(ud.x, ud.y, ud.z);
+            }
+
+            function doPlaceBlock() {
+                const dir = getLookDir();
+                raycaster.set(camera.position, dir);
+                const meshes = Object.values(world);
+                const hits = raycaster.intersectObjects(meshes);
+                if (hits.length === 0) return;
+                const hit = hits[0];
+                const ud = hit.object.userData;
+                const n = hit.face.normal;
+                const px = ud.x + Math.round(n.x);
+                const py = ud.y + Math.round(n.y);
+                const pz = ud.z + Math.round(n.z);
+                const pp = camera.position;
+                if (Math.abs(px + 0.5 - pp.x) < 0.8 &&
+                    Math.abs(py + 0.5 - (pp.y - PLAYER_HEIGHT * 0.5)) < 1.2 &&
+                    Math.abs(pz + 0.5 - pp.z) < 0.8) return;
+                const type = SLOT_TYPES[selectedSlot - 1] || 'dirt';
+                addBlock(px, py, pz, type);
+            }
+
+            function onClick(e) {
+                if (!isMobile && document.pointerLockElement !== document.body) return;
+                if (e.button === 0) {
+                    doBreakBlock();
+                } else if (e.button === 2) {
+                    doPlaceBlock();
+                }
+            }
+
+            function setupMobileControls() {
+                isMobile = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || window.innerWidth < 900;
+                const mobileUI = document.getElementById('mc-mobile');
+                if (isMobile) {
+                    mobileUI.classList.add('show');
+                } else {
+                    mobileUI.classList.remove('show');
+                }
+
+                // Joystick
+                const joyZone = document.getElementById('mc-joystick-zone');
+                const knob = document.getElementById('mc-joystick-knob');
+                const maxDist = 35;
+                let joyActive = false;
+
+                function joyStart(e) {
+                    e.preventDefault();
+                    joyActive = true;
+                    joyMove(e);
+                }
+                function joyMove(e) {
+                    if (!joyActive) return;
+                    e.preventDefault();
+                    const t = e.touches ? e.touches[0] : e;
+                    const rect = joyZone.getBoundingClientRect();
+                    const cx = rect.left + rect.width / 2;
+                    const cy = rect.top + rect.height / 2;
+                    let dx = t.clientX - cx;
+                    let dy = t.clientY - cy;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist > maxDist) {
+                        dx = (dx / dist) * maxDist;
+                        dy = (dy / dist) * maxDist;
+                    }
+                    knob.style.left = (41 + dx) + 'px';
+                    knob.style.top = (41 + dy) + 'px';
+                    joyX = dx / maxDist;
+                    joyZ = dy / maxDist;
+                }
+                function joyEnd(e) {
+                    joyActive = false;
+                    knob.style.left = '41px';
+                    knob.style.top = '41px';
+                    joyX = 0;
+                    joyZ = 0;
+                }
+                joyZone.addEventListener('touchstart', joyStart, { passive: false });
+                joyZone.addEventListener('touchmove', joyMove, { passive: false });
+                joyZone.addEventListener('touchend', joyEnd);
+                joyZone.addEventListener('touchcancel', joyEnd);
+
+                // Jump
+                const jumpBtn = document.getElementById('mc-btn-jump');
+                jumpBtn.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    keys['mobileJump'] = true;
+                }, { passive: false });
+                jumpBtn.addEventListener('touchend', function() {
+                    keys['mobileJump'] = false;
+                });
+
+                // Right zone: look + hold to break
+                const breakZone = document.getElementById('mc-break-zone');
+                breakZone.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    if (e.touches.length === 0) return;
+                    const t = e.touches[0];
+                    lookTouchId = t.identifier;
+                    lastLookX = t.clientX;
+                    lastLookY = t.clientY;
+                    breaking = true;
+                    breakTimer = 0;
+                }, { passive: false });
+
+                breakZone.addEventListener('touchmove', function(e) {
+                    e.preventDefault();
+                    for (let i = 0; i < e.touches.length; i++) {
+                        const t = e.touches[i];
+                        if (t.identifier === lookTouchId) {
+                            const dx = t.clientX - lastLookX;
+                            const dy = t.clientY - lastLookY;
+                            lastLookX = t.clientX;
+                            lastLookY = t.clientY;
+                            const sens = 0.005;
+                            yaw -= dx * sens;
+                            pitch -= dy * sens;
+                            pitch = Math.max(-Math.PI / 2 + 0.01, Math.min(Math.PI / 2 - 0.01, pitch));
+                        }
+                    }
+                }, { passive: false });
+
+                breakZone.addEventListener('touchend', function(e) {
+                    breaking = false;
+                    breakTimer = 0;
+                    lookTouchId = null;
+                });
+                breakZone.addEventListener('touchcancel', function() {
+                    breaking = false;
+                    breakTimer = 0;
+                    lookTouchId = null;
+                });
+
+                // Hotbar slots - click sekali = pilih + taruh block
+                document.querySelectorAll('.mc-slot').forEach(function(slot) {
+                    slot.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        document.querySelectorAll('.mc-slot').forEach(function(s) {
+                            s.classList.remove('selected');
+                        });
+                        slot.classList.add('selected');
+                        selectedSlot = parseInt(slot.getAttribute('data-slot'), 10);
+                        doPlaceBlock();
+                    });
+                    slot.addEventListener('touchend', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        document.querySelectorAll('.mc-slot').forEach(function(s) {
+                            s.classList.remove('selected');
+                        });
+                        slot.classList.add('selected');
+                        selectedSlot = parseInt(slot.getAttribute('data-slot'), 10);
+                        doPlaceBlock();
+                    }, { passive: false });
+                });
+
+                // Bag button
+                document.getElementById('mc-bag').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    alert('Inventory: Pilih slot 1-7 di hotbar untuk taruh block');
+                });
+            }
+
+            function animate() {
+                if (!running) return;
+                animId = requestAnimationFrame(animate);
+                const dt = Math.min(clock.getDelta(), 0.05);
+
+                // Intro camera tilt
+                if (!introDone) {
+                    introTilt += dt * 1.2;
+                    if (introTilt >= 1) {
+                        introTilt = 1;
+                        introDone = true;
+                    }
+                    // Ease from tilted to normal
+                    const t = introTilt;
+                    const ease = t * t * (3 - 2 * t);
+                    pitch = (1 - ease) * (-0.55) + ease * 0;
+                }
+
+                // Movement (keyboard + mobile joystick)
+                direction.set(0, 0, 0);
+                if (keys['KeyW']) direction.z -= 1;
+                if (keys['KeyS']) direction.z += 1;
+                if (keys['KeyA']) direction.x -= 1;
+                if (keys['KeyD']) direction.x += 1;
+                // Joystick mobile
+                if (Math.abs(joyX) > 0.1 || Math.abs(joyZ) > 0.1) {
+                    direction.x += joyX;
+                    direction.z += joyZ;
+                }
+                if (direction.length() > 0) direction.normalize();
+
+                const speed = keys['ShiftLeft'] ? MOVE_SPEED * 1.5 : MOVE_SPEED;
+                const forward = new THREE.Vector3(Math.sin(yaw), 0, Math.cos(yaw));
+                const right = new THREE.Vector3(Math.cos(yaw), 0, -Math.sin(yaw));
+
+                let moveX = 0, moveZ = 0;
+                if (direction.z !== 0 || direction.x !== 0) {
+                    moveX = (-forward.x * direction.z + right.x * direction.x) * speed * dt;
+                    moveZ = (-forward.z * direction.z + right.z * direction.x) * speed * dt;
+                }
+
+                velocity.y -= GRAVITY * dt;
+                if ((keys['Space'] || keys['mobileJump']) && canJump) {
+                    velocity.y = JUMP_SPEED;
+                    canJump = false;
+                }
+
+                // Hold-to-break (mobile kanan)
+                if (breaking) {
+                    breakTimer += dt;
+                    if (breakTimer >= BREAK_HOLD_TIME) {
+                        breakTimer = 0;
+                        doBreakBlock();
+                    }
+                } else {
+                    breakTimer = 0;
+                }
+
+                const pos = camera.position.clone();
+                pos.y -= PLAYER_HEIGHT; // feet
+                collide(pos, new THREE.Vector3(moveX, velocity.y * dt, moveZ));
+                camera.position.set(pos.x, pos.y + PLAYER_HEIGHT, pos.z);
+
+                camera.rotation.order = 'YXZ';
+                camera.rotation.y = yaw;
+                camera.rotation.x = pitch;
+
+                // HUD
+                const p = camera.position;
+                document.getElementById('mc-pos').textContent =
+                    'XYZ: ' + p.x.toFixed(1) + ' ' + p.y.toFixed(1) + ' ' + p.z.toFixed(1);
+
+                frameCount++;
+                const now = performance.now();
+                if (now - lastFpsTime >= 1000) {
+                    document.getElementById('mc-fps').textContent = 'FPS: ' + frameCount;
+                    frameCount = 0;
+                    lastFpsTime = now;
+                }
+
+                renderer.render(scene, camera);
+            }
+
+            function onResize() {
+                if (!renderer || !camera) return;
+                const wrap = document.getElementById('mc-canvas-wrap');
+                const w = wrap.clientWidth;
+                const h = wrap.clientHeight;
+                camera.aspect = w / h;
+                camera.updateProjectionMatrix();
+                renderer.setSize(w, h);
+            }
+
+            function startPointerLock() {
+                document.body.requestPointerLock();
+            }
+
+            function init() {
+                if (initialized) {
+                    isMobile = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || window.innerWidth < 900;
+                    const mobileUI = document.getElementById('mc-mobile');
+                    if (isMobile) mobileUI.classList.add('show');
+                    else mobileUI.classList.remove('show');
+                    running = true;
+                    clock = new THREE.Clock();
+                    animate();
+                    return;
+                }
+
+                const wrap = document.getElementById('mc-canvas-wrap');
+                scene = new THREE.Scene();
+                scene.background = new THREE.Color(0x87CEEB);
+                scene.fog = new THREE.Fog(0x87CEEB, 30, 70);
+
+                camera = new THREE.PerspectiveCamera(75, wrap.clientWidth / wrap.clientHeight, 0.1, 200);
+                camera.position.set(0, 12, 0);
+
+                renderer = new THREE.WebGLRenderer({ antialias: true });
+                renderer.setSize(wrap.clientWidth, wrap.clientHeight);
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                wrap.appendChild(renderer.domElement);
+
+                // Lights
+                const ambient = new THREE.AmbientLight(0xffffff, 0.55);
+                scene.add(ambient);
+                const sun = new THREE.DirectionalLight(0xffffff, 0.75);
+                sun.position.set(50, 80, 30);
+                scene.add(sun);
+
+                blocksGroup = new THREE.Group();
+                scene.add(blocksGroup);
+                raycaster = new THREE.Raycaster();
+                raycaster.far = 6;
+
+                generateWorld();
+
+                // Find safe spawn
+                camera.position.set(0.5, 18, 0.5);
+                for (let y = 20; y >= 0; y--) {
+                    if (isSolid(0, y, 0)) {
+                        camera.position.y = y + 1 + PLAYER_HEIGHT;
+                        break;
+                    }
+                }
+
+                velocity.set(0, 0, 0);
+                pitch = -0.55; // start tilted looking down
+                yaw = 0;
+                introTilt = 0;
+                introDone = false;
+                canJump = false;
+
+                // Events
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mousedown', onClick);
+                document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+                document.addEventListener('keydown', function(e) { keys[e.code] = true; });
+                document.addEventListener('keyup', function(e) { keys[e.code] = false; });
+                window.addEventListener('resize', onResize);
+
+                setupMobileControls();
+
+                const startOverlay = document.getElementById('mc-click-start');
+                startOverlay.addEventListener('click', function() {
+                    startOverlay.classList.add('hidden');
+                    if (!isMobile) {
+                        startPointerLock();
+                    }
+                    if (!running) {
+                        running = true;
+                        clock = new THREE.Clock();
+                        animate();
+                    }
+                });
+                startOverlay.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    startOverlay.classList.add('hidden');
+                    if (!running) {
+                        running = true;
+                        clock = new THREE.Clock();
+                        animate();
+                    }
+                }, { passive: false });
+
+                document.addEventListener('pointerlockchange', function() {
+                    if (!isMobile && document.pointerLockElement !== document.body) {
+                        startOverlay.classList.remove('hidden');
+                        startOverlay.querySelector('p').textContent = 'KLIK UNTUK LANJUT BERMAIN';
+                    }
+                });
+
+                initialized = true;
+            }
+
+            function stop() {
+                running = false;
+                if (animId) cancelAnimationFrame(animId);
+                if (document.pointerLockElement) document.exitPointerLock();
+                const startOverlay = document.getElementById('mc-click-start');
+                if (startOverlay) {
+                    startOverlay.classList.remove('hidden');
+                    startOverlay.querySelector('p').textContent = 'KLIK UNTUK MASUK KE GAME';
+                }
+            }
+
+            return { init, stop };
+        })();
+    </script>
+</body>
+</html>
